@@ -1,40 +1,11 @@
 import { useState } from "react";
-import { useSearchParams } from "wouter";
-import { Check, Mail, MapPin, Phone } from "lucide-react";
+import { Check, Mail, Phone } from "lucide-react";
 import { PageHero } from "../components/page-hero";
 import { Pill } from "../components/ui/pill";
 import { cn } from "@/lib/utils";
 import { useSubmitInquiry } from "../queries/content";
 
-type Kind = "general" | "wholesale" | "press";
-
-const KINDS: { value: Kind; label: string; blurb: string }[] = [
-  {
-    value: "general",
-    label: "General",
-    blurb: "Order questions, hardware swaps, COA requests, or anything else.",
-  },
-  {
-    value: "wholesale",
-    label: "Wholesale",
-    blurb: "Licensed retailers and distributors — tell us your licence type and volume.",
-  },
-  {
-    value: "press",
-    label: "Press",
-    blurb: "Interviews, gallery night coverage, artist collabs, and brand assets.",
-  },
-];
-
-function isKind(value: string): value is Kind {
-  return value === "general" || value === "wholesale" || value === "press";
-}
-
 function Contact() {
-  const [search] = useSearchParams();
-  const initialKind = search.get("kind") ?? "";
-
-  const [kind, setKind] = useState<Kind>(isKind(initialKind) ? initialKind : "general");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
@@ -42,7 +13,6 @@ function Contact() {
   const [error, setError] = useState<string | null>(null);
 
   const submit = useSubmitInquiry();
-  const active = KINDS.find((k) => k.value === kind) ?? KINDS[0];
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -55,7 +25,6 @@ function Contact() {
 
     submit.mutate(
       {
-        kind,
         name: name.trim(),
         email: email.trim(),
         company: company.trim() || undefined,
@@ -106,29 +75,10 @@ function Contact() {
               </div>
             ) : (
               <form onSubmit={onSubmit} noValidate>
-                <span className="label-xs text-acid">What's this about?</span>
-
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {KINDS.map((k) => (
-                    <button
-                      key={k.value}
-                      type="button"
-                      onClick={() => setKind(k.value)}
-                      aria-pressed={kind === k.value}
-                      className={cn(
-                        "rounded-full border px-5 py-2.5 text-[0.75rem] font-bold uppercase tracking-[0.12em] transition-all",
-                        kind === k.value
-                          ? "border-acid bg-acid text-void"
-                          : "border-line text-bone/70 hover:border-bone/25 hover:text-bone",
-                      )}
-                    >
-                      {k.label}
-                    </button>
-                  ))}
-                </div>
+                <span className="label-xs text-acid">Send us a note</span>
 
                 <p className="text-ash mt-4 text-[0.8125rem] leading-relaxed">
-                  {active.blurb}
+                  Order questions, hardware swaps, COA requests, or anything else.
                 </p>
 
                 <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -159,19 +109,11 @@ function Contact() {
                 </div>
 
                 <label className="mt-4 block">
-                  <span className="label-xs text-ash">
-                    Company {kind === "general" ? "(optional)" : ""}
-                  </span>
+                  <span className="label-xs text-ash">Company (optional)</span>
                   <input
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
-                    placeholder={
-                      kind === "wholesale"
-                        ? "Retailer name + licence number"
-                        : kind === "press"
-                          ? "Publication or outlet"
-                          : "Optional"
-                    }
+                    placeholder="Optional"
                     aria-label="Company"
                     autoComplete="organization"
                     className={cn(inputClass, "mt-3")}
@@ -227,10 +169,10 @@ function Contact() {
                   },
                   {
                     Icon: Mail,
-                    label: "Wholesale",
-                    value: "trade@greenleafsociety.example",
+                    label: "Support",
+                    value: "support@greenleafsociety.example",
                   },
-                  { Icon: Phone, label: "Flagship", value: "(213) 555-0142" },
+                  { Icon: Phone, label: "Phone", value: "(213) 555-0142" },
                 ].map((row) => (
                   <li key={row.value} className="flex items-start gap-3.5">
                     <span className="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-panel-2 text-acid">
@@ -250,20 +192,11 @@ function Contact() {
             <div className="panel relative min-h-[240px] flex-1">
               <img
                 src="/images/store.png"
-                alt="Green Leaf Society flagship"
+                alt="Green Leaf Society jars and hardware on a lit counter"
                 loading="lazy"
                 className="absolute inset-0 size-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-void via-void/50 to-transparent" />
-              <div className="relative flex h-full flex-col justify-end p-7 md:p-8">
-                <span className="grid size-10 place-items-center rounded-full border border-line bg-void/60 text-acid backdrop-blur">
-                  <MapPin className="size-4" />
-                </span>
-                <p className="display-sm mt-5 text-bone">Flagship — Boyle Heights</p>
-                <p className="text-bone/70 mt-2.5 text-[0.8125rem] leading-relaxed">
-                  1832 E 1st St, Los Angeles, CA 90033 · Open daily 9am–10pm
-                </p>
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-void/20 to-transparent" />
             </div>
           </div>
         </div>

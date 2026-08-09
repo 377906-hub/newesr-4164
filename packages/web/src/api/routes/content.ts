@@ -12,7 +12,6 @@ export const content = {
   submitInquiry: base
     .input(
       z.object({
-        kind: z.enum(["general", "wholesale", "press"]),
         name: z.string().min(2).max(120),
         email: z.string().email(),
         company: z.string().max(160).optional(),
@@ -23,7 +22,7 @@ export const content = {
       const [row] = await db
         .insert(schema.inquiries)
         .values({
-          kind: input.kind,
+          kind: "general",
           name: input.name,
           email: input.email,
           company: input.company ?? null,

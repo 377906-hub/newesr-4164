@@ -7,12 +7,6 @@ export function moneyShort(cents: number) {
   return cents % 100 === 0 ? `$${cents / 100}` : money(cents);
 }
 
-export function pricePerGram(cents: number, size: string) {
-  const grams = Number.parseFloat(size);
-  if (!grams || Number.isNaN(grams)) return null;
-  return `${money(Math.round(cents / grams))}/g`;
-}
-
 export const STRAIN_TYPE_LABEL: Record<string, string> = {
   indica: "Indica",
   sativa: "Sativa",

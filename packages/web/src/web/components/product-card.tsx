@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { Plus } from "lucide-react";
 import { useCart } from "@/lib/cart";
-import { moneyShort, money, pricePerGram, STRAIN_TYPE_LABEL } from "@/lib/format";
+import { moneyShort, money, STRAIN_TYPE_LABEL } from "@/lib/format";
 import type { Product } from "../queries/catalog";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +13,6 @@ export function ProductCard({
   className?: string;
 }) {
   const cart = useCart();
-  const perGram = pricePerGram(product.priceCents, product.size);
   const badges = product.badges ? product.badges.split(",").filter(Boolean) : [];
 
   function addToCart(e: React.MouseEvent) {
@@ -96,7 +95,6 @@ export function ProductCard({
             </div>
             <span className="text-ash/80 text-[0.6875rem]">
               {product.size}
-              {perGram ? ` · ${perGram}` : ""}
             </span>
           </div>
 

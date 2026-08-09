@@ -92,7 +92,6 @@ export const orderItems = sqliteTable("order_items", {
 
 export const inquiries = sqliteTable("inquiries", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  /** general | wholesale | press */
   kind: text("kind").notNull(),
   name: text("name").notNull(),
   email: text("email").notNull(),

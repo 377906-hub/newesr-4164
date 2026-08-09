@@ -5,27 +5,50 @@ import { Pill } from "../components/ui/pill";
 import { Marquee } from "../components/marquee";
 import { Reveal, RevealItem } from "../components/reveal";
 import { SectionHeader } from "../components/section-header";
+import { cn } from "@/lib/utils";
 
-const TIMELINE = [
+const GALLERY = [
   {
-    year: "2019",
-    title: "A borrowed press",
-    copy: "Six friends, a Boyle Heights print shop, and a rosin bag on a Friday night. The first run was 40 carts, all given away.",
+    src: "/images/society.png",
+    alt: "A Green Leaf Society gallery night in East LA",
+    caption: "Gallery night 41",
+    meta: "Every third Thursday",
+    span: "md:col-span-7 aspect-[16/10]",
   },
   {
-    year: "2021",
-    title: "First farm partner",
-    copy: "We stopped buying bulk oil and started buying whole harvests from a single family farm in the Salinas Valley.",
+    src: "/images/flatlay.png",
+    alt: "Packaging flatlay with artist panels",
+    caption: "Artist panels",
+    meta: "Current packaging run",
+    span: "md:col-span-5 aspect-[4/5]",
   },
   {
-    year: "2023",
-    title: "Hardware, finally solved",
-    copy: "Nineteen bodies tested, one survived our 200-pull clog test. That's the chassis under every disposable we ship.",
+    src: "/images/strain-macro.png",
+    alt: "Macro shot of trichome-covered flower",
+    caption: "Macro",
+    meta: "Single-harvest flower",
+    span: "md:col-span-5 aspect-[4/5]",
   },
   {
-    year: "2026",
-    title: "Six doors, one Society",
-    copy: "A rotating artist on every box, and forty-one funded gallery nights and counting.",
+    src: "/images/store.png",
+    alt: "Jars and hardware on a lit counter",
+    caption: "The counter",
+    meta: "Batch jars, hand-labelled",
+    span: "md:col-span-7 aspect-[16/10]",
+  },
+  {
+    src: "/images/lifestyle.png",
+    alt: "A member of the Society holding a disposable",
+    caption: "Members",
+    meta: "Studio session, print swap",
+    span: "md:col-span-6 aspect-[3/2]",
+  },
+  {
+    src: "/images/hero.png",
+    alt: "Green Leaf Society hardware lineup",
+    caption: "The lineup",
+    meta: "Screw-ons & disposables",
+    span: "md:col-span-6 aspect-[3/2]",
   },
 ];
 
@@ -56,9 +79,9 @@ function Society() {
   return (
     <>
       <PageHero
-        eyebrow="The Society"
+        eyebrow="Gallery"
         title="A brand, not a shelf"
-        blurb="Green Leaf Society exists because the shelf was full of anonymous oil in anonymous plastic. We wanted something that told you where it came from — and put the people who made it on the front."
+        blurb="Rooms, runs, and the people in them. Artist panels, gallery nights, single-harvest flower, and the hardware we put our name on."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Pill variant="acid" size="lg" asChild>
@@ -67,7 +90,7 @@ function Society() {
             </Link>
           </Pill>
           <Pill variant="ghost" size="lg" asChild>
-            <Link to="/contact?kind=press">Press &amp; partnerships</Link>
+            <Link to="/contact">Get in touch</Link>
           </Pill>
         </div>
       </PageHero>
@@ -98,8 +121,8 @@ function Society() {
               <div className="panel panel-sheen flex flex-1 flex-col justify-center p-7 md:p-9">
                 <p className="font-display text-6xl font-bold leading-none text-acid">41</p>
                 <p className="text-ash mt-4 text-sm leading-relaxed">
-                  gallery nights funded since 2019 — artists paid, walls filled, nobody
-                  asked to work for exposure.
+                  gallery nights funded — artists paid, walls filled, nobody asked to
+                  work for exposure.
                 </p>
               </div>
               <div className="panel relative aspect-[4/3] w-full">
@@ -116,38 +139,47 @@ function Society() {
       </section>
 
       <Marquee
-        items={["Where cannabis, art & culture collide", "Est. Boyle Heights 2019"]}
+        items={["Where cannabis, art & culture collide", "Green Leaf Society"]}
         duration={46}
         accent
       />
 
-      {/* Timeline */}
+      {/* Gallery grid */}
       <section className="shell py-20 md:py-28">
         <SectionHeader
           align="left"
-          eyebrow="How we got here"
+          eyebrow="The gallery"
           title={
             <>
-              Seven years,
+              Rooms, runs
               <br />
-              no shortcuts
+              &amp; the people in them
             </>
           }
-          blurb="We grew slowly on purpose. Every jump was a farm relationship or a hardware fix, never a marketing budget."
+          blurb="Shot on the nights and in the rooms where the work actually happens. No stock, no studio gloss."
         />
 
-        <Reveal className="mt-14 grid gap-4 md:mt-16 md:grid-cols-2 lg:grid-cols-4 md:gap-5">
-          {TIMELINE.map((entry) => (
-            <RevealItem key={entry.year}>
-              <div className="panel panel-sheen flex h-full flex-col p-7 md:p-8">
-                <span className="font-display text-3xl font-bold leading-none text-acid">
-                  {entry.year}
-                </span>
-                <h3 className="display-sm mt-6 text-bone">{entry.title}</h3>
-                <p className="text-ash mt-3 text-[0.875rem] leading-relaxed">
-                  {entry.copy}
-                </p>
-              </div>
+        <Reveal className="mt-14 grid gap-4 md:mt-16 md:grid-cols-12 md:gap-5">
+          {GALLERY.map((shot) => (
+            <RevealItem key={shot.src + shot.caption} className={shot.span.split(" ")[0]}>
+              <figure
+                className={cn(
+                  "panel group relative w-full overflow-hidden",
+                  shot.span.split(" ")[1],
+                )}
+              >
+                <img
+                  src={shot.src}
+                  alt={shot.alt}
+                  loading="lazy"
+                  className="size-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-void/85 via-void/10 to-transparent" />
+                <figcaption className="absolute inset-x-0 bottom-0 p-6 md:p-7">
+                  <span className="label-xs text-acid">{shot.caption}</span>
+                  <p className="text-bone/80 mt-2 text-[0.8125rem]">{shot.meta}</p>
+                </figcaption>
+              </figure>
             </RevealItem>
           ))}
         </Reveal>

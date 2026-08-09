@@ -13,16 +13,15 @@ const COLUMNS = [
   {
     title: "Society",
     links: [
-      { label: "Our Story", href: "/society" },
+      { label: "Gallery", href: "/society" },
       { label: "Contact", href: "/contact" },
     ],
   },
   {
-    title: "Trade",
+    title: "Support",
     links: [
-      { label: "Wholesale", href: "/contact?kind=wholesale" },
-      { label: "Press", href: "/contact?kind=press" },
       { label: "Lab Results", href: "/society#testing" },
+      { label: "Delivery", href: "/shop" },
     ],
   },
 ];

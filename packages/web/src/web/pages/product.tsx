@@ -19,7 +19,6 @@ import {
   CATEGORY_LABEL,
   STRAIN_TYPE_LABEL,
   money,
-  pricePerGram,
   splitList,
 } from "@/lib/format";
 import { useProduct } from "../queries/catalog";
@@ -82,7 +81,6 @@ function ProductDetail() {
   }
 
   const { product, strain, related } = query.data;
-  const perGram = pricePerGram(product.priceCents, product.size);
   const badges = splitList(product.badges);
 
   function add() {
@@ -164,9 +162,6 @@ function ProductDetail() {
                     <span className="text-ash pb-1 text-sm line-through">
                       {money(product.compareAtCents)}
                     </span>
-                  ) : null}
-                  {perGram ? (
-                    <span className="text-ash pb-1 text-sm">{perGram}</span>
                   ) : null}
                 </div>
 
