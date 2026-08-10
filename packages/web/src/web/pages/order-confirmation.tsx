@@ -58,9 +58,19 @@ function OrderConfirmation() {
 
           <RevealItem className="mt-6">
             <p className="text-ash mx-auto max-w-[52ch] text-[0.95rem] leading-relaxed">
-              We've sent a confirmation to{" "}
-              <span className="text-bone">{order.email}</span>. Your order code is below
-              — bring it with you.
+              {order.receiptSentAt ? (
+                <>
+                  Your receipt is on its way to{" "}
+                  <span className="text-bone">{order.email}</span> — it has your items,
+                  your address and the cash total. Quote the code below to your driver.
+                </>
+              ) : (
+                <>
+                  We've saved your order under{" "}
+                  <span className="text-bone">{order.email}</span>. Quote the code below
+                  to your driver.
+                </>
+              )}
             </p>
           </RevealItem>
 

@@ -164,13 +164,8 @@ function Contact() {
                 {[
                   {
                     Icon: Mail,
-                    label: "General",
-                    value: "hello@greenleafsociety.example",
-                  },
-                  {
-                    Icon: Mail,
-                    label: "Support",
-                    value: "support@greenleafsociety.example",
+                    label: "Email",
+                    value: "greenleafsocietyworld@yahoo.com",
                   },
                   { Icon: Phone, label: "Phone", value: "(213) 555-0142" },
                   {

@@ -78,6 +78,8 @@ export const orders = sqliteTable("orders", {
   deliveryCents: integer("delivery_cents").notNull().default(0),
   totalCents: integer("total_cents").notNull(),
   status: text("status").notNull().default("received"),
+  /** Set once the confirmation receipt has actually been emailed. */
+  receiptSentAt: integer("receipt_sent_at", { mode: "timestamp" }),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),

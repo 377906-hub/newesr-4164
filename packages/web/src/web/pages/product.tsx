@@ -213,7 +213,7 @@ function ProductDetail() {
                 </div>
 
                 <p className="text-ash mt-4 text-xs">
-                  Same-day delivery Thu, Sat & Sun, 1–10pm — $5 under $60, free above
+                  Same-day delivery Thu, Sat & Sun, 1–10pm — $5 under $55, free above
                 </p>
 
                 {/* Spec grid */}

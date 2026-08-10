@@ -140,7 +140,7 @@ function Checkout() {
                   <p className="text-ash mt-1.5 text-[0.75rem] leading-relaxed">
                     Across most of San Diego, Thursdays, Saturdays, and Sundays between
                     1pm and 10pm — order on a delivery day and it lands the same day. $5
-                    flat under $60, free above it.
+                    flat under $55, free above it.
                   </p>
                 </div>
               </div>
@@ -304,7 +304,7 @@ function Checkout() {
 
               {toFreeCents > 0 ? (
                 <p className="mt-6 rounded-2xl border border-amber/35 bg-amber/10 px-5 py-3.5 text-[0.75rem] leading-relaxed text-amber">
-                  {money(deliveryCents)} delivery on orders under $60 — add{" "}
+                  {money(deliveryCents)} delivery on orders under $55 — add{" "}
                   {money(toFreeCents)} more to drop it.
                 </p>
               ) : null}

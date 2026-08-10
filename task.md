@@ -140,3 +140,31 @@ Checkout = order capture only, no Stripe. Age gate 21+. Guest checkout, no auth.
 ### Still open
 - **Prices ($40 / $45 / $50) and THC % for the five Muha Meds and the Arcadia product are placeholders.** Only Sherbinskis has real COA numbers.
 - `/strains` in the nav — the library has 7 real strains now, so it is no longer empty; kept, but never explicitly confirmed.
+
+## Round: price + delivery threshold update
+- Muha Meds All-In-One (all 5 flavors): $40 → **$25** (compare-at $50 → $30, kept proportional).
+- Sherbinskis 1G Live Resin Headset: $50 → **$40** (no compare-at).
+- Arcadia Fusion 2G MAC 1 x Jack Herer: $45 → **$30** (compare-at $55 → $36).
+- Free delivery threshold: $60 → **$55** (`FREE_DELIVERY_THRESHOLD_CENTS = 5500` in both `src/api/lib/delivery.ts` and `src/web/lib/delivery.ts`). $5 flat fee below it, unchanged.
+- Copy updated: `index.tsx` ("Free over $55"), `product.tsx`, `checkout.tsx` (x2), `orders.ts` comment.
+- Verified: reseed 7/7, typecheck 3/3, oxlint 0 warnings/0 errors, build 2/2.
+- Playwright orders: **GLS-TBGMTH** ($25 subtotal → $5 delivery → $30.00 due in cash) and **GLS-W76DNF** ($65 subtotal → Free delivery). Console errors: none.
+
+## Round: contact email + order receipt emails
+- Contact page "Direct lines": two `.example` addresses collapsed into one row — **greenleafsocietyworld@yahoo.com**.
+- Arcadia Fusion repriced $45 → $30 (compare-at $36).
+- Email stack: `resend@6.18.1` added to `packages/web`.
+  - `src/api/services/email.ts` — `sendEmail()`, `emailFrom()`, `emailEnabled()`. No `RESEND_API_KEY` = send is skipped and returns false, never throws. `text` + `html` both required (Resend's typed union rejects neither).
+  - `src/api/services/order-receipt.ts` — `receiptSubject/receiptText/receiptHtml`. Table layout + inline styles, brand palette, HTML-escaped user input, PT timestamps. Includes items, qty, unit price, subtotal, delivery, cash total, full delivery address, phone, email, notes, delivery days, cash-only + safety notices.
+  - `routes/orders.ts` — sends after the order commits, inside try/catch: a mail failure logs and never loses the order. BCC via `ORDER_BCC_EMAIL`, reply-to via `ORDER_REPLY_TO`.
+  - `schema.ts` — `orders.receiptSentAt` (timestamp, nullable), set only on a real send. Pushed with `drizzle-kit push --force` → `[✓] Changes applied`.
+  - `order-confirmation.tsx` — copy branches on `receiptSentAt`; no longer claims an email was sent when it wasn't. Also fixed stale "bring it with you" → "quote the code to your driver" (delivery-only).
+- Env: `ORDER_FROM_EMAIL=GLS@greenleafsociety.store`, `ORDER_BCC_EMAIL`/`ORDER_REPLY_TO=greenleafsocietyworld@yahoo.com` in `.env`; all four keys added to `.env.template`.
+- Verified: typecheck 3/3, oxlint 0/0, build 2/2, receipt rendered to /tmp/z/receipt.png and reviewed, live orders **GLS-UUFNNX** ($30) and **GLS-M7A3CJ** (free delivery) placed with email disabled — no console errors, no server errors.
+- **BLOCKED:** needs `RESEND_API_KEY` + DNS verification of `greenleafsociety.store` in Resend before receipts actually send.
+
+## Round: Resend key added — send BLOCKED on DNS
+- `RESEND_API_KEY` saved to `.env` (sending-only scope; `/domains` API returns 401 by design).
+- Direct API probe: `POST /emails` from `GLS@greenleafsociety.store` → **403 `validation_error`: "The greenleafsociety.store domain is not verified."** Sending stays blocked until DNS is verified in Resend.
+- Failure path verified live: orders **GLS-V2XJQA** ($30) and **GLS-JK5D5N** (free delivery) both saved fine with the send failing. Server logged `[orders] receipt email failed for ...`; zero browser console errors; `receiptSentAt` stayed null; confirmation page correctly rendered the "We've saved your order under ..." copy instead of falsely claiming an email was sent.
+- No code changes needed — the graceful-degradation design works as intended. Next action is on the user: verify the domain's DNS records in Resend.

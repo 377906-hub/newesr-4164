@@ -193,7 +193,7 @@ function ProductShelf() {
 function DeliveryStrip() {
   const perks = [
     { title: "Thu · Sat · Sun", copy: "Same-day drops between 1pm and 10pm." },
-    { title: "Free over $60", copy: "$5 flat delivery under sixty dollars, free above it." },
+    { title: "Free over $55", copy: "$5 flat delivery under fifty-five dollars, free above it." },
     { title: "Live tracking", copy: "Your driver texts a window before they roll out." },
     { title: "Cash only", copy: "Pay the driver at the door. Nothing is charged online." },
   ];

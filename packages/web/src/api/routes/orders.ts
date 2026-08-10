@@ -5,6 +5,8 @@ import { base } from "../__core/app";
 import { db } from "../database";
 import * as schema from "../database/schema";
 import { deliveryFeeCents } from "../lib/delivery";
+import { sendEmail } from "../services/email";
+import { receiptHtml, receiptSubject, receiptText } from "../services/order-receipt";
 
 
 function orderCode() {
@@ -63,7 +65,7 @@ export const orders = {
         (sum, i) => sum + i.unitPriceCents * i.quantity,
         0,
       );
-      // Tax is not applied. Delivery is $5 under $60, free at or above it.
+      // Tax is not applied. Delivery is $5 under $55, free at or above it.
       const taxCents = 0;
       const deliveryCents = deliveryFeeCents(subtotalCents);
       const totalCents = subtotalCents + deliveryCents;
@@ -90,7 +92,57 @@ export const orders = {
         .insert(schema.orderItems)
         .values(priced.map((i) => ({ ...i, orderId: order.id })));
 
-      return { code: order.code, subtotalCents, taxCents, deliveryCents, totalCents };
+      // Receipt email. Never let a mail failure lose a confirmed order — the
+      // order is already committed, so we log and move on.
+      const receipt = {
+        code: order.code,
+        customerName: input.customerName,
+        email: input.email,
+        phone: input.phone,
+        addressLine: input.addressLine,
+        city: input.city,
+        zip: input.zip,
+        notes: input.notes ?? null,
+        items: priced.map((i) => ({
+          productName: i.productName,
+          quantity: i.quantity,
+          unitPriceCents: i.unitPriceCents,
+        })),
+        subtotalCents,
+        deliveryCents,
+        totalCents,
+        placedAt: new Date(),
+      };
+
+      let receiptEmailed = false;
+      try {
+        receiptEmailed = await sendEmail({
+          to: input.email,
+          bcc: process.env.ORDER_BCC_EMAIL?.trim() || undefined,
+          subject: receiptSubject(receipt),
+          text: receiptText(receipt),
+          html: receiptHtml(receipt),
+          replyTo: process.env.ORDER_REPLY_TO?.trim() || undefined,
+        });
+      } catch (error) {
+        console.error(`[orders] receipt email failed for ${order.code}:`, error);
+      }
+
+      if (receiptEmailed) {
+        await db
+          .update(schema.orders)
+          .set({ receiptSentAt: new Date() })
+          .where(eq(schema.orders.id, order.id));
+      }
+
+      return {
+        code: order.code,
+        subtotalCents,
+        taxCents,
+        deliveryCents,
+        totalCents,
+        receiptEmailed,
+      };
     }),
 
   get: base.input(z.object({ code: z.string() })).handler(async ({ input }) => {

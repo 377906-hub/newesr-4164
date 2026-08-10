@@ -2,11 +2,11 @@
  * Client-side mirror of the delivery fee rules in src/api/lib/delivery.ts.
  * Display only — the server re-computes the fee on every order.
  *
- * $5 flat delivery fee under $60, free at $60 and above.
+ * $5 flat delivery fee under $55, free at $55 and above.
  */
 
 export const DELIVERY_FEE_CENTS = 500;
-export const FREE_DELIVERY_THRESHOLD_CENTS = 6000;
+export const FREE_DELIVERY_THRESHOLD_CENTS = 5500;
 
 export function deliveryFeeCents(subtotalCents: number) {
   return subtotalCents >= FREE_DELIVERY_THRESHOLD_CENTS ? 0 : DELIVERY_FEE_CENTS;
