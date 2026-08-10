@@ -55,6 +55,9 @@ function readStored(): CartLine[] {
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>(readStored);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  /* Screen-reader announcement for cart changes — the drawer opening is a
+     visual cue only, so state changes get spoken here instead. */
+  const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => {
     try {
@@ -77,6 +80,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return [...prev, { ...line, quantity }];
     });
     setDrawerOpen(true);
+    setAnnouncement(`${line.name} added to your bag`);
   }, []);
 
   const setQuantity = useCallback((slug: string, quantity: number) => {
@@ -90,7 +94,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const remove = useCallback((slug: string) => {
-    setLines((prev) => prev.filter((l) => l.slug !== slug));
+    setLines((prev) => {
+      const line = prev.find((l) => l.slug === slug);
+      if (line) setAnnouncement(`${line.name} removed from your bag`);
+      return prev.filter((l) => l.slug !== slug);
+    });
   }, []);
 
   const clear = useCallback(() => setLines([]), []);
@@ -112,7 +120,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     };
   }, [lines, drawerOpen, add, setQuantity, remove, clear]);
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={value}>
+      {children}
+      <span aria-live="polite" aria-atomic="true" className="sr-only">
+        {announcement}
+      </span>
+    </CartContext.Provider>
+  );
 }
 
 export function useCart() {

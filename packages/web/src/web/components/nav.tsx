@@ -6,11 +6,17 @@ import { cn } from "@/lib/utils";
 import { Pill } from "./ui/pill";
 
 const LINKS = [
-  { label: "Screw-Ons", href: "/shop/screw-ons" },
+  { label: "All Products", href: "/shop" },
   { label: "Disposables", href: "/shop/disposables" },
+  { label: "Screw-Ons", href: "/shop/screw-ons" },
   { label: "Strains", href: "/strains" },
-  { label: "The Society", href: "/society" },
 ];
+
+/** Marks a nav link active for its own route and any nested child route. */
+function isActive(location: string, href: string) {
+  if (href === "/shop") return location === "/shop";
+  return location === href || location.startsWith(`${href}/`);
+}
 
 export function Nav() {
   const [location] = useLocation();
@@ -26,6 +32,15 @@ export function Nav() {
   }, []);
 
   useEffect(() => setMobileOpen(false), [location]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -51,9 +66,14 @@ export function Nav() {
             className="flex shrink-0 items-center gap-2.5"
             aria-label="Green Leaf Society home"
           >
-            <span className="grid size-8 place-items-center rounded-full bg-acid">
-              <span className="font-display text-[0.8125rem] font-bold text-void">G</span>
-            </span>
+            <img
+              src="/images/logo-seal.png"
+              alt=""
+              width={320}
+              height={320}
+              decoding="async"
+              className="size-10 shrink-0 rounded-full md:size-11"
+            />
             <span className="font-display text-[0.9375rem] font-bold uppercase leading-none tracking-[-0.01em] text-bone">
               Green Leaf
               <span className="block text-[0.625rem] font-semibold tracking-[0.22em] text-acid">
@@ -65,13 +85,14 @@ export function Nav() {
           {/* Desktop links */}
           <nav className="hidden items-center gap-1 lg:flex">
             {LINKS.map((link) => {
-              const active = location === link.href;
+              const active = isActive(location, link.href);
               return (
                 <Link
                   key={link.href}
                   to={link.href}
+                  aria-current={active ? "page" : undefined}
                   className={cn(
-                    "rounded-full px-4 py-2 text-[0.8125rem] font-medium transition-colors",
+                    "rounded-full px-4 py-2.5 text-[0.8125rem] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60 focus-visible:ring-offset-2 focus-visible:ring-offset-void",
                     active
                       ? "bg-panel-2 text-bone"
                       : "text-bone/65 hover:bg-panel hover:text-bone",
@@ -98,7 +119,7 @@ export function Nav() {
               type="button"
               onClick={cart.openDrawer}
               aria-label={`Open cart (${cart.count} items)`}
-              className="relative grid size-10 place-items-center rounded-full border border-line bg-panel text-bone transition-colors hover:border-bone/25 hover:bg-panel-2"
+              className="relative grid size-11 place-items-center rounded-full border border-line bg-panel text-bone transition-colors hover:border-bone/25 hover:bg-panel-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60 focus-visible:ring-offset-2 focus-visible:ring-offset-void"
             >
               <ShoppingBag className="size-4" strokeWidth={2} />
               {cart.count > 0 && (
@@ -112,7 +133,7 @@ export function Nav() {
               type="button"
               onClick={() => setMobileOpen(true)}
               aria-label="Open menu"
-              className="grid size-10 place-items-center rounded-full border border-line bg-panel text-bone lg:hidden"
+              className="grid size-11 place-items-center rounded-full border border-line bg-panel text-bone transition-colors hover:bg-panel-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60 focus-visible:ring-offset-2 focus-visible:ring-offset-void lg:hidden"
             >
               <Menu className="size-4" strokeWidth={2} />
             </button>
@@ -136,28 +157,29 @@ export function Nav() {
                 type="button"
                 onClick={() => setMobileOpen(false)}
                 aria-label="Close menu"
-                className="grid size-10 place-items-center rounded-full border border-line bg-panel text-bone"
+                className="grid size-11 place-items-center rounded-full border border-line bg-panel text-bone transition-colors hover:bg-panel-2"
               >
                 <X className="size-4" />
               </button>
             </div>
 
             <nav className="mt-10 flex flex-col gap-1">
-              {LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  className="display-md border-b border-line py-4 text-bone transition-colors hover:text-acid"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Link
-                to="/contact"
-                className="display-md border-b border-line py-4 text-bone transition-colors hover:text-acid"
-              >
-                Contact
-              </Link>
+              {[...LINKS, { label: "Contact", href: "/contact" }].map((link) => {
+                const active = isActive(location, link.href);
+                return (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "display-md border-b border-line py-4 transition-colors hover:text-acid",
+                      active ? "text-acid" : "text-bone",
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </nav>
 
             <div className="mt-auto pt-8">

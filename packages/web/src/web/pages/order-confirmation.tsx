@@ -12,7 +12,7 @@ function OrderConfirmation() {
 
   if (query.isLoading) {
     return (
-      <section className="shell pb-24 pt-[140px] md:pt-[170px]">
+      <section className="shell section-b-lg nav-offset pt-[calc(68px+4rem)] md:pt-[calc(76px+6rem)]">
         <div className="panel h-[420px] animate-pulse" />
       </section>
     );
@@ -37,10 +37,10 @@ function OrderConfirmation() {
   const { order, items } = query.data;
 
   return (
-    <section className="relative overflow-hidden pt-[68px] md:pt-[76px]">
+    <section className="relative overflow-hidden nav-offset">
       <div className="haze -top-40 left-1/2 h-[460px] w-[720px] -translate-x-1/2" />
 
-      <div className="shell relative pb-24 pt-14 md:pb-32 md:pt-20">
+      <div className="shell relative section-b-lg pt-14 md:pt-20">
         <Reveal viewport={false} className="flex flex-col items-center text-center">
           <RevealItem>
             <span className="grid size-16 place-items-center rounded-full bg-acid text-void">
@@ -90,7 +90,8 @@ function OrderConfirmation() {
                 {order.city} {order.zip}
               </p>
               <p className="text-ash mt-6 border-t border-line pt-5 text-[0.8125rem] leading-relaxed">
-                A driver will text {order.phone} with a delivery window. Someone needs to
+                A driver will text {order.phone} with a delivery window. We run drops on
+                Thursdays, Saturdays, and Sundays between 1pm and 10pm — someone needs to
                 be there to sign for the order.
               </p>
             </div>
@@ -145,9 +146,15 @@ function OrderConfirmation() {
                 <dt className="text-ash">Subtotal</dt>
                 <dd className="text-bone">{money(order.subtotalCents)}</dd>
               </div>
+              <div className="flex justify-between">
+                <dt className="text-ash">Delivery</dt>
+                <dd className={order.deliveryCents === 0 ? "text-acid" : "text-bone"}>
+                  {order.deliveryCents === 0 ? "Free" : money(order.deliveryCents)}
+                </dd>
+              </div>
               <div className="flex items-baseline justify-between border-t border-line pt-4">
                 <dt className="font-display text-base font-bold uppercase text-bone">
-                  Due on delivery
+                  Due in cash on delivery
                 </dt>
                 <dd className="font-display text-2xl font-bold text-acid">
                   {money(order.totalCents)}
@@ -156,7 +163,7 @@ function OrderConfirmation() {
             </dl>
 
             <p className="text-ash/80 mt-6 text-[0.6875rem] leading-relaxed">
-              Nothing has been charged. Pay with cash or debit at handover. Orders are
+              Nothing has been charged. Cash only — have it ready at handover. Orders are
               held for 48 hours before they go back on the shelf.
             </p>
 

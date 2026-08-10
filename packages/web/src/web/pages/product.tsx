@@ -52,7 +52,7 @@ function ProductDetail() {
 
   if (query.isLoading) {
     return (
-      <section className="shell pb-20 pt-[140px] md:pt-[170px]">
+      <section className="shell section-b nav-offset pt-[calc(68px+4rem)] md:pt-[calc(76px+6rem)]">
         <div className="grid gap-5 lg:grid-cols-2">
           <div className="panel aspect-square animate-pulse" />
           <div className="space-y-4">
@@ -100,10 +100,10 @@ function ProductDetail() {
 
   return (
     <>
-      <section className="relative overflow-hidden pt-[68px] md:pt-[76px]">
+      <section className="relative overflow-hidden nav-offset">
         <div className="haze -left-40 -top-32 h-[460px] w-[640px]" />
 
-        <div className="shell relative py-10 md:py-14">
+        <div className="shell relative section-y-sm">
           <Crumbs category={product.category} name={product.name} />
 
           <Reveal viewport={false} className="mt-8 grid gap-5 lg:grid-cols-2">
@@ -114,6 +114,10 @@ function ProductDetail() {
                   src={product.image}
                   alt={product.name}
                   className="size-full object-cover"
+                  width={1100}
+                  height={1100}
+                  decoding="async"
+                  fetchPriority="high"
                 />
                 <span className="label-xs absolute left-4 top-4 rounded-full bg-void/75 px-3 py-2 text-bone/85 backdrop-blur">
                   {STRAIN_TYPE_LABEL[product.strainType] ?? product.strainType}
@@ -136,7 +140,7 @@ function ProductDetail() {
                   {CATEGORY_LABEL[product.category] ?? product.category} · {product.size}
                 </span>
 
-                <h1 className="display-lg mt-5 text-bone">{product.name}</h1>
+                <h1 className="display-page mt-5 text-balance text-bone">{product.name}</h1>
                 <p className="text-ash mt-4 text-[0.95rem] leading-relaxed md:text-base">
                   {product.tagline}
                 </p>
@@ -172,7 +176,7 @@ function ProductDetail() {
                       type="button"
                       onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                       aria-label="Decrease quantity"
-                      className="grid size-10 place-items-center rounded-full text-bone transition-colors hover:bg-panel-2"
+                      className="grid size-11 place-items-center rounded-full text-bone transition-colors hover:bg-panel-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60"
                     >
                       <Minus className="size-4" />
                     </button>
@@ -183,7 +187,7 @@ function ProductDetail() {
                       type="button"
                       onClick={() => setQuantity((q) => Math.min(12, q + 1))}
                       aria-label="Increase quantity"
-                      className="grid size-10 place-items-center rounded-full text-bone transition-colors hover:bg-panel-2"
+                      className="grid size-11 place-items-center rounded-full text-bone transition-colors hover:bg-panel-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60"
                     >
                       <Plus className="size-4" />
                     </button>
@@ -209,7 +213,7 @@ function ProductDetail() {
                 </div>
 
                 <p className="text-ash mt-4 text-xs">
-                  Free same-day delivery in most of LA, Long Beach &amp; San Diego
+                  Same-day delivery Thu, Sat & Sun, 1–10pm — $5 under $60, free above
                 </p>
 
                 {/* Spec grid */}
@@ -258,7 +262,7 @@ function ProductDetail() {
       </section>
 
       {/* Description + strain */}
-      <section className="shell py-14 md:py-20">
+      <section className="shell section-y">
         <div className="grid gap-5 lg:grid-cols-12">
           <div className="panel panel-sheen p-7 md:p-10 lg:col-span-7">
             <span className="label-xs text-acid">The oil</span>
@@ -292,6 +296,9 @@ function ProductDetail() {
                   alt={strain.name}
                   loading="lazy"
                   className="size-full object-cover"
+                  width={1100}
+                  height={1100}
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-panel via-panel/30 to-transparent" />
               </div>
@@ -351,7 +358,7 @@ function ProductDetail() {
 
       {/* Related */}
       {related.length > 0 && (
-        <section className="shell pb-20 md:pb-28">
+        <section className="shell section-b">
           <div className="flex items-end justify-between gap-6">
             <h2 className="display-md text-bone">
               More {CATEGORY_LABEL[product.category] ?? product.category}

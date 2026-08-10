@@ -142,7 +142,7 @@ function Shop() {
                   onClick={() => toggleType(type)}
                   aria-pressed={active}
                   className={cn(
-                    "rounded-full border px-4 py-2 text-[0.75rem] font-bold uppercase tracking-[0.1em] transition-all",
+                    "min-h-10 rounded-full border px-4 py-2 text-[0.75rem] font-bold uppercase tracking-[0.1em] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60 focus-visible:ring-offset-2 focus-visible:ring-offset-panel",
                     active
                       ? "border-acid bg-acid text-void"
                       : "border-line text-bone/70 hover:border-bone/25 hover:text-bone",
@@ -186,9 +186,9 @@ function Shop() {
       </div>
 
       {/* Grid */}
-      <section className="shell py-12 md:py-16">
+      <section className="shell section-y-sm">
         {products.isError ? (
-          <div className="panel px-8 py-20 text-center">
+          <div className="panel px-6 py-16 text-center md:px-8 md:py-20">
             <p className="display-sm text-bone">Couldn't load the catalog</p>
             <p className="text-ash mt-3 text-sm">Refresh the page to try again.</p>
           </div>
@@ -198,14 +198,34 @@ function Shop() {
               <ProductCardSkeleton key={i} />
             ))}
           </div>
-        ) : count === 0 ? (
-          <div className="panel px-8 py-20 text-center">
+        ) : count === 0 && activeTypes.length > 0 ? (
+          <div className="panel px-6 py-16 text-center md:px-8 md:py-20">
             <p className="display-sm text-bone">Nothing matches that filter</p>
             <p className="text-ash mx-auto mt-3 max-w-[40ch] text-sm">
               Try a different strain type, or clear the filter to see the whole run.
             </p>
             <Pill variant="ghost" className="mt-7" onClick={clearFilters}>
               Clear filters
+            </Pill>
+          </div>
+        ) : count === 0 ? (
+          <div className="panel panel-sheen flex min-h-[360px] flex-col items-center justify-center px-6 py-14 text-center md:px-8 md:py-16">
+            <img
+              src="/images/logo-seal.png"
+              alt=""
+              className="size-20 rounded-full opacity-70 md:size-24"
+              width={320}
+              height={320}
+              decoding="async"
+              loading="lazy"
+            />
+            <p className="display-md mt-8 text-bone">Shelf is being restocked</p>
+            <p className="text-ash mx-auto mt-4 max-w-[46ch] text-sm leading-relaxed">
+              We're clearing the case for a new lineup. The first disposable drop is on its
+              way — message us and we'll tell you the day it lands.
+            </p>
+            <Pill variant="ghost" className="mt-8" asChild>
+              <Link to="/contact">Get notified</Link>
             </Pill>
           </div>
         ) : (
@@ -224,7 +244,7 @@ function Shop() {
       />
 
       {/* Reassurance strip */}
-      <section className="shell py-16 md:py-24">
+      <section className="shell section-y">
         <div className="grid gap-4 md:grid-cols-3 md:gap-5">
           {[
             {
@@ -236,8 +256,8 @@ function Shop() {
               copy: "Clogged, leaking, or dead on arrival? Message us with the batch code and we replace it, no receipt hunting.",
             },
             {
-              title: "Same-day delivery",
-              copy: "Order before 6pm and it lands the same evening across most of LA, Long Beach, Santa Ana and San Diego.",
+              title: "Thu · Sat · Sun delivery",
+              copy: "We deliver Thursdays, Saturdays, and Sundays between 1pm and 10pm across most of San Diego. Order on a delivery day and it lands the same day.",
             },
           ].map((item) => (
             <div key={item.title} className="panel panel-sheen p-7 md:p-8">

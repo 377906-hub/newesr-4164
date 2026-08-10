@@ -7,7 +7,7 @@ export const pillVariants = cva(
   {
     variants: {
       variant: {
-        acid: "bg-acid text-void hover:bg-[#c8ff5f] active:bg-acid-dim",
+        acid: "bg-acid text-void hover:bg-[#8ff0bb] active:bg-acid-dim",
         bone: "bg-bone text-void hover:bg-white",
         ghost:
           "border border-line text-bone hover:bg-panel-2 hover:border-bone/25",

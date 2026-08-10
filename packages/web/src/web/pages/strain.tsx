@@ -12,7 +12,7 @@ function StrainDetail() {
 
   if (query.isLoading) {
     return (
-      <section className="shell pb-20 pt-[140px] md:pt-[170px]">
+      <section className="shell section-b nav-offset pt-[calc(68px+4rem)] md:pt-[calc(76px+6rem)]">
         <div className="panel h-[360px] animate-pulse" />
         <div className="mt-5 grid gap-5 lg:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
@@ -41,10 +41,10 @@ function StrainDetail() {
 
   return (
     <>
-      <section className="relative overflow-hidden pt-[68px] md:pt-[76px]">
+      <section className="relative overflow-hidden nav-offset">
         <div className="haze -right-40 -top-24 h-[440px] w-[620px]" />
 
-        <div className="shell relative py-10 md:py-14">
+        <div className="shell relative section-y-sm">
           <nav
             aria-label="Breadcrumb"
             className="text-ash flex items-center gap-1.5 text-xs"
@@ -63,6 +63,10 @@ function StrainDetail() {
                   src={strain.image}
                   alt={strain.name}
                   className="absolute inset-0 size-full object-cover"
+                  width={1100}
+                  height={1100}
+                  decoding="async"
+                  fetchPriority="high"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-void via-void/30 to-transparent" />
                 <div className="relative flex h-full flex-col justify-end p-7 md:p-10">
@@ -70,7 +74,7 @@ function StrainDetail() {
                     {STRAIN_TYPE_LABEL[strain.type] ?? strain.type}
                     {strain.featured ? " · House pick" : ""}
                   </span>
-                  <h1 className="display-lg mt-5 text-bone">{strain.name}</h1>
+                  <h1 className="display-page mt-5 text-balance text-bone">{strain.name}</h1>
                   <p className="text-bone/70 mt-4 text-sm">{strain.lineage}</p>
                 </div>
               </div>
@@ -103,7 +107,7 @@ function StrainDetail() {
       </section>
 
       {/* Profile */}
-      <section className="shell py-6 md:py-10">
+      <section className="shell section-y-sm">
         <div className="grid gap-5 lg:grid-cols-12">
           <div className="panel panel-sheen p-7 md:p-10 lg:col-span-7">
             <span className="label-xs text-acid">The write-up</span>
@@ -149,7 +153,7 @@ function StrainDetail() {
       </section>
 
       {/* Products */}
-      <section className="shell py-16 md:py-24">
+      <section className="shell section-y">
         <div className="flex flex-col items-start justify-between gap-5 md:flex-row md:items-end">
           <div>
             <span className="label-xs text-acid">Available in</span>
@@ -171,7 +175,7 @@ function StrainDetail() {
             ))}
           </div>
         ) : (
-          <div className="panel mt-10 px-8 py-16 text-center">
+          <div className="panel mt-10 px-6 py-14 text-center md:px-8 md:py-16">
             <p className="text-ash mx-auto max-w-[46ch] text-sm leading-relaxed">
               This cut isn't in a current run. Join the drop list and we'll
               flag you when it presses again.

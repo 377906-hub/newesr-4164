@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Mail, Phone } from "lucide-react";
+import { Check, Clock, Mail, Phone } from "lucide-react";
 import { PageHero } from "../components/page-hero";
 import { Pill } from "../components/ui/pill";
 import { cn } from "@/lib/utils";
@@ -42,10 +42,10 @@ function Contact() {
       <PageHero
         eyebrow="Get in touch"
         title="Talk to the Society"
-        blurb="A real person reads every message — usually within one business day. For anything time-sensitive, call the number below."
+        blurb="We're online only — a real person reads every message, usually within one business day. For anything time-sensitive, call the number below."
       />
 
-      <section className="shell pb-20 md:pb-28">
+      <section className="shell section-b">
         <div className="grid gap-5 lg:grid-cols-12">
           {/* Form */}
           <div className="panel panel-sheen p-7 md:p-10 lg:col-span-7">
@@ -173,6 +173,11 @@ function Contact() {
                     value: "support@greenleafsociety.example",
                   },
                   { Icon: Phone, label: "Phone", value: "(213) 555-0142" },
+                  {
+                    Icon: Clock,
+                    label: "Delivery days",
+                    value: "Thu, Sat & Sun · 1–10pm",
+                  },
                 ].map((row) => (
                   <li key={row.value} className="flex items-start gap-3.5">
                     <span className="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-panel-2 text-acid">
@@ -191,10 +196,13 @@ function Contact() {
 
             <div className="panel relative min-h-[240px] flex-1">
               <img
-                src="/images/store.png"
-                alt="Green Leaf Society jars and hardware on a lit counter"
+                src="/images/atmosphere.jpg"
+                alt=""
                 loading="lazy"
                 className="absolute inset-0 size-full object-cover"
+                width={1600}
+                height={907}
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-void/20 to-transparent" />
             </div>

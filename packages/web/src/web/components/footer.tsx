@@ -11,16 +11,17 @@ const COLUMNS = [
     ],
   },
   {
-    title: "Society",
+    title: "Browse",
     links: [
-      { label: "Gallery", href: "/society" },
-      { label: "Contact", href: "/contact" },
+      { label: "All Products", href: "/shop" },
+      { label: "Strain Library", href: "/strains" },
     ],
   },
   {
     title: "Support",
     links: [
-      { label: "Lab Results", href: "/society#testing" },
+      { label: "Contact", href: "/contact" },
+      { label: "Lab Results", href: "/contact" },
       { label: "Delivery", href: "/shop" },
     ],
   },
@@ -28,7 +29,7 @@ const COLUMNS = [
 
 export function Footer() {
   return (
-    <footer className="relative mt-24 overflow-hidden border-t border-line bg-void md:mt-32">
+    <footer className="relative overflow-hidden border-t border-line bg-void">
       <div className="haze -bottom-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2" />
 
       <div className="shell relative py-16 md:py-20">
@@ -36,9 +37,15 @@ export function Footer() {
           {/* Brand block */}
           <div>
             <div className="flex items-center gap-3">
-              <span className="grid size-9 place-items-center rounded-full bg-acid">
-                <span className="font-display text-sm font-bold text-void">G</span>
-              </span>
+              <img
+                src="/images/logo-seal.png"
+                alt=""
+                className="size-12 shrink-0 rounded-full"
+                width={320}
+                height={320}
+                decoding="async"
+                loading="lazy"
+              />
               <span className="font-display text-base font-bold uppercase leading-none text-bone">
                 Green Leaf
                 <span className="block text-[0.625rem] font-semibold tracking-[0.22em] text-acid">
@@ -48,8 +55,9 @@ export function Footer() {
             </div>
 
             <p className="text-ash mt-6 max-w-[42ch] text-sm leading-relaxed">
-              Live-resin screw-ons and 2g rechargeable disposables, pressed in small
-              batches in California. Where cannabis, art, and culture collide.
+              A curated online cannabis shop — screw-on carts, rechargeable disposables,
+              and the brands worth carrying. Lab-tested, sealed, and delivered same day
+              across most of San Diego on Thursdays, Saturdays, and Sundays, 1–10pm. Where cannabis, art, and culture collide.
             </p>
 
             <div className="mt-7 flex gap-2">
@@ -82,7 +90,7 @@ export function Footer() {
                     <li key={link.label}>
                       <Link
                         to={link.href}
-                        className="text-sm text-bone/75 transition-colors hover:text-acid"
+                        className="rounded-sm text-sm text-bone/75 transition-colors hover:text-acid focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60 focus-visible:ring-offset-2 focus-visible:ring-offset-void"
                       >
                         {link.label}
                       </Link>
@@ -108,7 +116,7 @@ export function Footer() {
           </p>
 
           <div className="mt-6 flex flex-col gap-3 text-[0.6875rem] text-ash/70 sm:flex-row sm:items-center sm:justify-between">
-            <span>© {new Date().getFullYear()} Green Leaf Society. Lic. C11-0000432-LIC</span>
+            <span>© {new Date().getFullYear()} Green Leaf Society. Online delivery only — Thu, Sat & Sun, 1–10pm.</span>
             <div className="flex gap-5">
               {["Privacy", "Terms", "Accessibility"].map((label) => (
                 <Link
@@ -129,8 +137,8 @@ export function Footer() {
         className="pointer-events-none select-none overflow-hidden"
         aria-hidden="true"
       >
-        <span className="block translate-y-[22%] whitespace-nowrap text-center font-display text-[19vw] font-bold uppercase leading-[0.8] tracking-[-0.04em] text-bone/[0.055]">
-          The Society
+        <span className="block translate-y-[22%] whitespace-nowrap text-center font-display text-[15vw] font-bold uppercase leading-[0.8] tracking-[-0.04em] text-bone/[0.055]">
+          Green Leaf
         </span>
       </div>
     </footer>

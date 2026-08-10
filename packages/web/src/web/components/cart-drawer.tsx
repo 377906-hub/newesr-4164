@@ -51,7 +51,7 @@ export function CartDrawer() {
             type="button"
             onClick={cart.closeDrawer}
             aria-label="Close cart"
-            className="grid size-10 place-items-center rounded-full border border-line bg-panel-2 text-bone transition-colors hover:border-bone/25"
+            className="grid size-11 place-items-center rounded-full border border-line bg-panel-2 text-bone transition-colors hover:border-bone/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60"
           >
             <X className="size-4" />
           </button>
@@ -91,6 +91,10 @@ export function CartDrawer() {
                         src={line.image}
                         alt={line.name}
                         className="size-full object-cover"
+                        width={1100}
+                        height={1100}
+                        decoding="async"
+                        loading="lazy"
                       />
                     </Link>
 
@@ -108,7 +112,7 @@ export function CartDrawer() {
                           type="button"
                           onClick={() => cart.remove(line.slug)}
                           aria-label={`Remove ${line.name}`}
-                          className="text-ash transition-colors hover:text-destructive"
+                          className="text-ash grid size-9 shrink-0 place-items-center rounded-full transition-colors hover:bg-panel-2 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60"
                         >
                           <Trash2 className="size-4" />
                         </button>
@@ -119,8 +123,8 @@ export function CartDrawer() {
                           <button
                             type="button"
                             onClick={() => cart.setQuantity(line.slug, line.quantity - 1)}
-                            aria-label="Decrease quantity"
-                            className="grid size-7 place-items-center rounded-full text-bone transition-colors hover:bg-panel-2"
+                            aria-label={`Decrease quantity of ${line.name}`}
+                            className="grid size-9 place-items-center rounded-full text-bone transition-colors hover:bg-panel-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60"
                           >
                             <Minus className="size-3.5" />
                           </button>
@@ -130,8 +134,8 @@ export function CartDrawer() {
                           <button
                             type="button"
                             onClick={() => cart.setQuantity(line.slug, line.quantity + 1)}
-                            aria-label="Increase quantity"
-                            className="grid size-7 place-items-center rounded-full text-bone transition-colors hover:bg-panel-2"
+                            aria-label={`Increase quantity of ${line.name}`}
+                            className="grid size-9 place-items-center rounded-full text-bone transition-colors hover:bg-panel-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60"
                           >
                             <Plus className="size-3.5" />
                           </button>

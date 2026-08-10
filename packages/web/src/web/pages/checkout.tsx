@@ -6,6 +6,7 @@ import { Pill } from "../components/ui/pill";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/lib/cart";
 import { money } from "@/lib/format";
+import { amountToFreeDeliveryCents, deliveryFeeCents } from "@/lib/delivery";
 import { useCartPricing } from "../queries/catalog";
 import { useCreateOrder } from "../queries/orders";
 
@@ -50,6 +51,9 @@ function Checkout() {
     const live = server.get(line.slug);
     return sum + (live?.priceCents ?? line.priceCents) * line.quantity;
   }, 0);
+  const deliveryCents = deliveryFeeCents(subtotalCents);
+  const toFreeCents = amountToFreeDeliveryCents(subtotalCents);
+  const totalCents = subtotalCents + deliveryCents;
 
   if (cart.lines.length === 0 && !createOrder.isPending) {
     return (
@@ -57,14 +61,14 @@ function Checkout() {
         <PageHero
           eyebrow="Checkout"
           title="Your bag is empty"
-          blurb="Add something first and we'll get the order in. Nothing is charged on this site — you pay the driver on delivery."
+          blurb="Add something first and we'll get the order in. Nothing is charged on this site — you pay the driver in cash on delivery."
         >
           <Pill variant="acid" size="lg" asChild>
             <Link to="/shop">Browse the catalog</Link>
           </Pill>
         </PageHero>
-        <section className="shell pb-24 md:pb-32">
-          <div className="panel flex flex-col items-center px-8 py-20 text-center">
+        <section className="shell section-b-lg">
+          <div className="panel flex flex-col items-center px-6 py-16 text-center md:px-8 md:py-20">
             <span className="grid size-16 place-items-center rounded-full border border-line bg-panel-2 text-ash">
               <ShoppingBag className="size-6" />
             </span>
@@ -117,10 +121,10 @@ function Checkout() {
       <PageHero
         eyebrow="Checkout"
         title="Reserve your order"
-        blurb="We bring it to your door and you pay the driver — cash or debit. No card details are collected or stored on this site."
+        blurb="We bring it to your door and you pay the driver in cash. Cash only — no cards, and no payment details are collected or stored on this site."
       />
 
-      <section className="shell pb-20 md:pb-28">
+      <section className="shell section-b">
         <form onSubmit={onSubmit} noValidate className="grid gap-5 lg:grid-cols-12">
           <div className="flex flex-col gap-4 lg:col-span-7 xl:col-span-8 md:gap-5">
             {/* Delivery */}
@@ -132,10 +136,11 @@ function Checkout() {
                   <Truck className="size-4" />
                 </span>
                 <div>
-                  <p className="text-sm font-bold text-bone">Same-day delivery</p>
+                  <p className="text-sm font-bold text-bone">Thu · Sat · Sun, 1–10pm</p>
                   <p className="text-ash mt-1.5 text-[0.75rem] leading-relaxed">
-                    Free across most of LA, Long Beach, Santa Ana &amp; San Diego. Orders
-                    in before 6pm land the same evening.
+                    Across most of San Diego, Thursdays, Saturdays, and Sundays between
+                    1pm and 10pm — order on a delivery day and it lands the same day. $5
+                    flat under $60, free above it.
                   </p>
                 </div>
               </div>
@@ -156,7 +161,7 @@ function Checkout() {
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     aria-label="City"
-                    placeholder="Los Angeles"
+                    placeholder="San Diego"
                     autoComplete="address-level2"
                     className={inputClass}
                   />
@@ -254,6 +259,10 @@ function Checkout() {
                           src={line.image}
                           alt={line.name}
                           className="size-full object-cover"
+                          width={1100}
+                          height={1100}
+                          decoding="async"
+                          loading="lazy"
                         />
                       </span>
                       <span className="min-w-0 flex-1">
@@ -279,17 +288,26 @@ function Checkout() {
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-ash">Delivery</dt>
-                  <dd className="text-acid">Free</dd>
+                  <dd className={deliveryCents === 0 ? "text-acid" : "text-bone"}>
+                    {deliveryCents === 0 ? "Free" : money(deliveryCents)}
+                  </dd>
                 </div>
                 <div className="flex items-baseline justify-between border-t border-line pt-4">
                   <dt className="font-display text-base font-bold uppercase text-bone">
-                    Due on delivery
+                    Due in cash on delivery
                   </dt>
                   <dd className="font-display text-2xl font-bold text-acid">
-                    {money(subtotalCents)}
+                    {money(totalCents)}
                   </dd>
                 </div>
               </dl>
+
+              {toFreeCents > 0 ? (
+                <p className="mt-6 rounded-2xl border border-amber/35 bg-amber/10 px-5 py-3.5 text-[0.75rem] leading-relaxed text-amber">
+                  {money(deliveryCents)} delivery on orders under $60 — add{" "}
+                  {money(toFreeCents)} more to drop it.
+                </p>
+              ) : null}
 
               {error ? (
                 <p className="mt-6 rounded-2xl border border-destructive/40 bg-destructive/10 px-5 py-3.5 text-sm text-bone">
@@ -309,8 +327,8 @@ function Checkout() {
 
               <p className="text-ash/80 mt-5 flex items-start gap-2 text-[0.6875rem] leading-relaxed">
                 <Lock className="mt-0.5 size-3 shrink-0" />
-                No payment is taken online. We hold the order and you settle up at
-                handover with cash or debit.
+                No payment is taken online. We hold the order and you settle up in
+                cash at handover. Cash only — we can't take cards.
               </p>
 
               <Link

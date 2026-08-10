@@ -75,7 +75,7 @@ function Strains() {
         </div>
       </PageHero>
 
-      <section className="shell pb-16 md:pb-24">
+      <section className="shell section-b">
         {strains.isLoading ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 md:gap-5">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -83,7 +83,7 @@ function Strains() {
             ))}
           </div>
         ) : strains.isError ? (
-          <div className="panel px-8 py-20 text-center">
+          <div className="panel px-6 py-16 text-center md:px-8 md:py-20">
             <p className="display-sm text-bone">Couldn't load the library</p>
             <p className="text-ash mt-3 text-sm">Refresh the page to try again.</p>
           </div>
@@ -101,6 +101,9 @@ function Strains() {
                       alt={strain.name}
                       loading="lazy"
                       className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      width={1100}
+                      height={1100}
+                      decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-panel via-transparent to-transparent" />
                     <span className="label-xs absolute left-4 top-4 rounded-full bg-void/75 px-3 py-2 text-bone/85 backdrop-blur">
@@ -152,7 +155,7 @@ function Strains() {
         )}
 
         {strains.data?.length === 0 && (
-          <div className="panel px-8 py-20 text-center">
+          <div className="panel px-6 py-16 text-center md:px-8 md:py-20">
             <p className="display-sm text-bone">No strains in that lane right now</p>
             <p className="text-ash mt-3 text-sm">Clear the filter to see the full library.</p>
           </div>
@@ -164,7 +167,7 @@ function Strains() {
         duration={38}
       />
 
-      <section className="shell py-16 md:py-24">
+      <section className="shell section-y">
         <div className="grid gap-5 lg:grid-cols-3">
           {[
             {

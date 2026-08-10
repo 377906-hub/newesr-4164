@@ -23,7 +23,7 @@ export function PageHero({
   return (
     <section
       className={cn(
-        "relative overflow-hidden pt-[68px] md:pt-[76px]",
+        "relative overflow-hidden nav-offset",
         className,
       )}
     >

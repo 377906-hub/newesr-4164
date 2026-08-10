@@ -74,6 +74,8 @@ export const orders = sqliteTable("orders", {
   notes: text("notes"),
   subtotalCents: integer("subtotal_cents").notNull(),
   taxCents: integer("tax_cents").notNull(),
+  /** $5 under the free-delivery threshold, 0 at or above it. */
+  deliveryCents: integer("delivery_cents").notNull().default(0),
   totalCents: integer("total_cents").notNull(),
   status: text("status").notNull().default("received"),
   createdAt: integer("created_at", { mode: "timestamp" })

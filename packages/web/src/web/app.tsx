@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Link, Route, Switch, useLocation } from "wouter";
 import { Provider } from "./components/provider";
 import { AgentFeedback, RunableBadge } from "@runablehq/website-runtime";
@@ -9,15 +9,27 @@ import { CartDrawer } from "./components/cart-drawer";
 import { Pill } from "./components/ui/pill";
 
 import Index from "./pages/index";
-import Shop from "./pages/shop";
-import ProductDetail from "./pages/product";
-import Strains from "./pages/strains";
-import StrainDetail from "./pages/strain";
-import Society from "./pages/society";
-import Contact from "./pages/contact";
-import CartPage from "./pages/cart";
-import Checkout from "./pages/checkout";
-import OrderConfirmation from "./pages/order-confirmation";
+
+/* The landing page ships in the entry chunk; every other route is split out so
+   a first visit doesn't download the checkout flow it may never reach. */
+const Shop = lazy(() => import("./pages/shop"));
+const ProductDetail = lazy(() => import("./pages/product"));
+const Strains = lazy(() => import("./pages/strains"));
+const StrainDetail = lazy(() => import("./pages/strain"));
+const Contact = lazy(() => import("./pages/contact"));
+const CartPage = lazy(() => import("./pages/cart"));
+const Checkout = lazy(() => import("./pages/checkout"));
+const OrderConfirmation = lazy(() => import("./pages/order-confirmation"));
+
+/** Holds the nav offset and viewport height so a route swap never jumps. */
+function RouteFallback() {
+  return (
+    <div className="shell nav-offset flex min-h-[70vh] items-center justify-center">
+      <span className="sr-only">Loading</span>
+      <span className="size-8 animate-spin rounded-full border-2 border-line border-t-acid" />
+    </div>
+  );
+}
 
 /** Reset scroll on navigation; honour #hash targets. */
 function ScrollManager() {
@@ -62,23 +74,30 @@ function App() {
   return (
     <Provider>
       <CartProvider>
+        <a
+          href="#main"
+          className="label-xs sr-only rounded-full bg-acid px-5 py-3 text-void focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[90]"
+        >
+          Skip to content
+        </a>
         <Nav />
-        <main>
+        <main id="main">
           <ScrollManager />
-          <Switch>
-            <Route path="/" component={Index} />
-            <Route path="/shop" component={Shop} />
-            <Route path="/shop/:category" component={Shop} />
-            <Route path="/product/:slug" component={ProductDetail} />
-            <Route path="/strains" component={Strains} />
-            <Route path="/strains/:slug" component={StrainDetail} />
-            <Route path="/society" component={Society} />
-            <Route path="/contact" component={Contact} />
-            <Route path="/cart" component={CartPage} />
-            <Route path="/checkout" component={Checkout} />
-            <Route path="/order/:code" component={OrderConfirmation} />
-            <Route component={NotFound} />
-          </Switch>
+          <Suspense fallback={<RouteFallback />}>
+            <Switch>
+              <Route path="/" component={Index} />
+              <Route path="/shop" component={Shop} />
+              <Route path="/shop/:category" component={Shop} />
+              <Route path="/product/:slug" component={ProductDetail} />
+              <Route path="/strains" component={Strains} />
+              <Route path="/strains/:slug" component={StrainDetail} />
+              <Route path="/contact" component={Contact} />
+              <Route path="/cart" component={CartPage} />
+              <Route path="/checkout" component={Checkout} />
+              <Route path="/order/:code" component={OrderConfirmation} />
+              <Route component={NotFound} />
+            </Switch>
+          </Suspense>
         </main>
         <Footer />
         <CartDrawer />

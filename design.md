@@ -81,3 +81,49 @@ transforms only. Everything respects `prefers-reduced-motion`.
 - Every API call renders a skeleton in the panel shape it will fill.
 - Filters are pill toggles, reflected in URL query so links are shareable.
 - Compliance: 21+ notices, "for legal use only" footer line, no health claims.
+
+## Logo & palette update (logo-driven)
+Source: GLS circular seal on a graffiti brick wall (user-supplied).
+- `packages/web/public/images/logo-seal.png` — seal cut out of the artwork on transparent alpha. Used in nav, footer, hero, and favicon.
+- `packages/web/public/images/graffiti-wall.png` — same wall with the seal painted out; used as the hero backdrop at 28% opacity under a void gradient.
+- Accent tokens now come from the seal: `--color-acid: #6ee7a4` (mint), `--color-acid-dim: #2f8c58`, `--color-forest: #14432b`, `--color-mint: #e7f5ee`, and `--color-amber: #c3d19a` (sage leaf; token name kept to avoid a rename across pages).
+- Dark void base, type scale, motion, and layout system unchanged.
+
+## Vertical rhythm scale (added in the polish pass)
+
+Every section on the site uses one of these, defined in `packages/web/src/web/styles.css`.
+Do not hand-roll `py-*` on a section — pick a step.
+
+| Utility | Mobile | ≥768px | Use for |
+|---|---|---|---|
+| `section-y-sm` | 2.5rem | 3.5rem | filter rows, breadcrumb strips, tight bands |
+| `section-y` | 4rem | 6rem | standard band between content blocks |
+| `section-y-lg` | 5.5rem | 8rem | page openers, closing CTAs |
+| `section-b` / `section-b-lg` | — | — | bottom-only variants, for sections sitting directly under a hero |
+| `nav-offset` | 68px top | 76px top | first section on a page, clears the fixed header |
+
+The footer owns **no** top margin — each page's final section provides the gap.
+
+## Type scale
+
+`display-xl` (home h1) > `display-lg` (page-hero h1) > `display-page` (product / strain h1) >
+`display-md` > `display-sm` > body. `display-page` exists because long product names
+break at `display-lg`.
+
+`label-xs` runs at line-height **1.3**, not 1 — these labels wrap on narrow screens.
+
+## Accessibility baseline
+
+- Global `:focus-visible` outline in `--color-acid`; interactive elements on dark panels
+  also get an explicit `ring-offset` matching their surface.
+- Skip-to-content link precedes the nav, targeting `<main id="main">`.
+- `aria-current="page"` on active nav links, matching nested routes.
+- Tap targets: 44px for primary controls, never below 36px.
+- Cart mutations announce through the `aria-live` region in `CartProvider`.
+- `prefers-reduced-motion` disables the marquee, transitions, and animations.
+
+## Image rules
+
+Every `<img>` carries explicit `width`/`height` and `decoding="async"`.
+Above-the-fold images use `fetchPriority="high"`; everything else `loading="lazy"`.
+Photography ships as JPEG; only the seal (needs alpha) is PNG, as a 320×320 PNG8.

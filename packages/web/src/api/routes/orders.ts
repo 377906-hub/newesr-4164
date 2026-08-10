@@ -4,6 +4,7 @@ import { ORPCError } from "@orpc/server";
 import { base } from "../__core/app";
 import { db } from "../database";
 import * as schema from "../database/schema";
+import { deliveryFeeCents } from "../lib/delivery";
 
 
 function orderCode() {
@@ -62,9 +63,10 @@ export const orders = {
         (sum, i) => sum + i.unitPriceCents * i.quantity,
         0,
       );
-      // Tax is not applied — order totals equal the sum of line prices.
+      // Tax is not applied. Delivery is $5 under $60, free at or above it.
       const taxCents = 0;
-      const totalCents = subtotalCents;
+      const deliveryCents = deliveryFeeCents(subtotalCents);
+      const totalCents = subtotalCents + deliveryCents;
 
       const [order] = await db
         .insert(schema.orders)
@@ -79,6 +81,7 @@ export const orders = {
           notes: input.notes ?? null,
           subtotalCents,
           taxCents,
+          deliveryCents,
           totalCents,
         })
         .returning();
@@ -87,7 +90,7 @@ export const orders = {
         .insert(schema.orderItems)
         .values(priced.map((i) => ({ ...i, orderId: order.id })));
 
-      return { code: order.code, subtotalCents, taxCents, totalCents };
+      return { code: order.code, subtotalCents, taxCents, deliveryCents, totalCents };
     }),
 
   get: base.input(z.object({ code: z.string() })).handler(async ({ input }) => {

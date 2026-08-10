@@ -4,6 +4,7 @@ import { PageHero } from "../components/page-hero";
 import { Pill } from "../components/ui/pill";
 import { useCart } from "@/lib/cart";
 import { money } from "@/lib/format";
+import { amountToFreeDeliveryCents, deliveryFeeCents } from "@/lib/delivery";
 import { useCartPricing } from "../queries/catalog";
 
 function CartPage() {
@@ -18,6 +19,10 @@ function CartPage() {
     const live = server.get(line.slug);
     return sum + (live?.priceCents ?? line.priceCents) * line.quantity;
   }, 0);
+
+  const deliveryCents = deliveryFeeCents(subtotalCents);
+  const toFreeCents = amountToFreeDeliveryCents(subtotalCents);
+  const totalCents = subtotalCents + deliveryCents;
 
   const soldOut = cart.lines.filter((l) => server.get(l.slug)?.inStock === false);
   const repriced = cart.lines.filter((l) => {
@@ -43,8 +48,8 @@ function CartPage() {
           </div>
         </PageHero>
 
-        <section className="shell pb-24 md:pb-32">
-          <div className="panel flex flex-col items-center px-8 py-20 text-center">
+        <section className="shell section-b-lg">
+          <div className="panel flex flex-col items-center px-6 py-16 text-center md:px-8 md:py-20">
             <span className="grid size-16 place-items-center rounded-full border border-line bg-panel-2 text-ash">
               <ShoppingBag className="size-6" />
             </span>
@@ -66,7 +71,7 @@ function CartPage() {
         blurb="Prices are re-checked against live inventory. Add your delivery address on the next step — nothing is charged on this site."
       />
 
-      <section className="shell pb-20 md:pb-28">
+      <section className="shell section-b">
         <div className="grid gap-5 lg:grid-cols-12">
           {/* Lines */}
           <div className="lg:col-span-7 xl:col-span-8">
@@ -100,6 +105,10 @@ function CartPage() {
                         src={line.image}
                         alt={line.name}
                         className="size-full object-cover"
+                        width={1100}
+                        height={1100}
+                        decoding="async"
+                        loading="lazy"
                       />
                     </Link>
 
@@ -124,7 +133,7 @@ function CartPage() {
                           type="button"
                           onClick={() => cart.remove(line.slug)}
                           aria-label={`Remove ${line.name}`}
-                          className="text-ash shrink-0 transition-colors hover:text-destructive"
+                          className="text-ash grid size-10 shrink-0 -mr-2 -mt-2 place-items-center rounded-full transition-colors hover:bg-panel-2 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60"
                         >
                           <Trash2 className="size-4" />
                         </button>
@@ -135,10 +144,10 @@ function CartPage() {
                           <button
                             type="button"
                             onClick={() => cart.setQuantity(line.slug, line.quantity - 1)}
-                            aria-label="Decrease quantity"
-                            className="grid size-8 place-items-center rounded-full text-bone transition-colors hover:bg-panel-2"
+                            aria-label={`Decrease quantity of ${line.name}`}
+                            className="grid size-10 place-items-center rounded-full text-bone transition-colors hover:bg-panel-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60"
                           >
-                            <Minus className="size-3.5" />
+                            <Minus className="size-4" />
                           </button>
                           <span className="min-w-7 text-center text-sm font-bold text-bone">
                             {line.quantity}
@@ -146,10 +155,10 @@ function CartPage() {
                           <button
                             type="button"
                             onClick={() => cart.setQuantity(line.slug, line.quantity + 1)}
-                            aria-label="Increase quantity"
-                            className="grid size-8 place-items-center rounded-full text-bone transition-colors hover:bg-panel-2"
+                            aria-label={`Increase quantity of ${line.name}`}
+                            className="grid size-10 place-items-center rounded-full text-bone transition-colors hover:bg-panel-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60"
                           >
-                            <Plus className="size-3.5" />
+                            <Plus className="size-4" />
                           </button>
                         </div>
 
@@ -189,17 +198,25 @@ function CartPage() {
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-ash">Delivery</dt>
-                  <dd className="text-acid">Free</dd>
+                  <dd className={deliveryCents === 0 ? "text-acid" : "text-bone"}>
+                    {deliveryCents === 0 ? "Free" : money(deliveryCents)}
+                  </dd>
                 </div>
                 <div className="flex items-baseline justify-between border-t border-line pt-4">
                   <dt className="font-display text-base font-bold uppercase text-bone">
                     Total
                   </dt>
                   <dd className="font-display text-2xl font-bold text-acid">
-                    {money(subtotalCents)}
+                    {money(totalCents)}
                   </dd>
                 </div>
               </dl>
+
+              {toFreeCents > 0 ? (
+                <p className="mt-5 rounded-2xl border border-amber/35 bg-amber/10 px-5 py-3.5 text-[0.75rem] leading-relaxed text-amber">
+                  Add {money(toFreeCents)} more and delivery is free.
+                </p>
+              ) : null}
 
               <Pill
                 variant="acid"
@@ -218,8 +235,8 @@ function CartPage() {
               </Pill>
 
               <p className="text-ash/80 mt-5 text-[0.6875rem] leading-relaxed">
-                No card is charged online. You'll pay the driver on delivery — cash or
-                debit.
+                Nothing is charged online. You'll pay the driver on delivery — cash
+                only. We deliver Thu, Sat & Sun, 1–10pm.
               </p>
 
               {repriced.length > 0 ? (
